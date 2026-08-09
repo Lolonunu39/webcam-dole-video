@@ -19,7 +19,7 @@ remote_folder = REMOTE_PHOTO_DIR + yesterday + "/"
 
 # ---- 1) Connexion FTP ----
 ftp = FTP()
-ftp.connect(FTP_HOST, timeout=120)
+ftp.connect(FTP_HOST, timeout=360)
 ftp.login(FTP_USER, FTP_PASS)
 
 print("Connecté au FTP.")
