@@ -17,7 +17,9 @@ LOCAL_VIDEO_DIR = "videos/"
 yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 remote_folder = REMOTE_PHOTO_DIR + yesterday + "/"
 
-ftp = FTP(FTP_HOST)
+# ---- 1) Connexion FTP ----
+ftp = FTP()
+ftp.connect(FTP_HOST, timeout=120)
 ftp.login(FTP_USER, FTP_PASS)
 
 print("Connecté au FTP.")
@@ -44,15 +46,17 @@ for filename in jpg_files:
 
 print("Téléchargement terminé.")
 
+# ---- 2) Création du filelist ----
 filelist_path = os.path.join(LOCAL_IMG_DIR, "filelist.txt")
 
 with open(filelist_path, "w") as f:
     for filename in sorted(jpg_files):
         f.write(f"file '{filename}'\n")
-        f.write("duration 2\n")  # 2 secondes par image
+        f.write("duration 2\n")
 
 print("filelist.txt créé.")
 
+# ---- 3) Création de la vidéo ----
 video_path = os.path.join(LOCAL_VIDEO_DIR, f"{yesterday}.mp4")
 
 cmd = [
@@ -71,6 +75,12 @@ print("Création de la vidéo...")
 subprocess.run(cmd)
 print("Vidéo créée :", video_path)
 
+# ---- 4) Reconnexion FTP pour éviter le timeout ----
+ftp.quit()
+ftp = FTP()
+ftp.connect(FTP_HOST, timeout=120)
+ftp.login(FTP_USER, FTP_PASS)
+
 ftp.cwd(REMOTE_VIDEO_DIR)
 
 with open(video_path, "rb") as f:
@@ -78,7 +88,7 @@ with open(video_path, "rb") as f:
 
 print("Vidéo envoyée sur InfinityFree !")
 
-# Suppression des images
+# ---- 5) Suppression des images ----
 ftp.cwd(remote_folder)
 
 for filename in jpg_files:
