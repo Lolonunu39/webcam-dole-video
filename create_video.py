@@ -65,8 +65,10 @@ cmd = [
     "-f", "concat",
     "-safe", "0",
     "-i", filelist_path,
-    "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+    "-vf", "scale=1280:-2",   # réduit la résolution
     "-c:v", "libx264",
+    "-preset", "veryfast",    # encode plus vite
+    "-crf", "30",             # compression plus forte
     "-pix_fmt", "yuv420p",
     video_path
 ]
