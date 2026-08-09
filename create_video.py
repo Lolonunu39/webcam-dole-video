@@ -99,4 +99,4 @@ for filename in jpg_files:
         print("Impossible de supprimer :", filename)
 
 print("Suppression des images terminée.")
-ftp.quit()
+ftp.close()
