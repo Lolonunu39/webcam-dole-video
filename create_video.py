@@ -76,10 +76,11 @@ subprocess.run(cmd)
 print("Vidéo créée :", video_path)
 
 # ---- 4) Reconnexion FTP pour éviter le timeout ----
-ftp.quit()
+ftp.close()
 ftp = FTP()
 ftp.connect(FTP_HOST, timeout=120)
 ftp.login(FTP_USER, FTP_PASS)
+ftp.voidcmd("NOOP")
 
 ftp.cwd(REMOTE_VIDEO_DIR)
 
@@ -89,6 +90,7 @@ with open(video_path, "rb") as f:
 print("Vidéo envoyée sur InfinityFree !")
 
 # ---- 5) Suppression des images ----
+ftp.voidcmd("NOOP")
 ftp.cwd(remote_folder)
 
 for filename in jpg_files:
