@@ -1,0 +1,25 @@
+name: Create Webcam Video
+
+on:
+  schedule:
+    - cron: "5 0 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install FFmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+    - name: Run script
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PASS: ${{ secrets.FTP_PASS }}
+      run: |
+        mkdir -p images
+        mkdir -p videos
+        python3 create_video.py
